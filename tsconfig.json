@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "Preserve",
+    "baseUrl": "./src",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["*"]
+    },
+    "lib": ["es2022", "dom"],
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Bundler",
+    "declaration": true,
+    "esModuleInterop": true,
+    "declarationMap": true,
+    "preserveSymlinks": true,
+  },
+  "include": ["src", "test"],
+  "exclude": ["node_modules"]
+
+}

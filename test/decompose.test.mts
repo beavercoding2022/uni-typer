@@ -1,0 +1,231 @@
+// sum.test.js
+import { expect, test } from "vitest";
+import {
+  simpleDecompose,
+  detailDecompose,
+  fullDecompose,
+} from "../src/decompose.mjs";
+
+test("decompose '가나다'", () => {
+  expect(simpleDecompose("가나다")).toEqual([
+    "ㄱ",
+    "ㅏ",
+    "ㄴ",
+    "ㅏ",
+    "ㄷ",
+    "ㅏ",
+  ]);
+});
+
+test("decompose '가나다' with wordDecomposer", () => {
+  expect(detailDecompose("가나다")).toEqual([
+    {
+      char: "가",
+      charIndex: 0,
+      decomposedSingle: ["ㄱ", "ㅏ"],
+      wordBeforeCharIndex: "",
+    },
+    {
+      char: "나",
+      charIndex: 1,
+      decomposedSingle: ["ㄴ", "ㅏ"],
+      wordBeforeCharIndex: "가",
+    },
+    {
+      char: "다",
+      charIndex: 2,
+      decomposedSingle: ["ㄷ", "ㅏ"],
+      wordBeforeCharIndex: "가나",
+    },
+  ]);
+});
+
+test("decompose '뷁뛣겍", () => {
+  expect(fullDecompose("뷁뛣겍")).toEqual([
+    {
+      wordBeforeCharIndex: "",
+      char: "뷁",
+      charIndex: 0,
+      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 0,
+      decomposedAtIndex: "ㅂ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "뷁",
+      charIndex: 0,
+      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 1,
+      decomposedAtIndex: "ㅞ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "뷁",
+      charIndex: 0,
+      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 2,
+      decomposedAtIndex: "ㄺ",
+      decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "뷁",
+      char: "뛣",
+      charIndex: 1,
+      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 3,
+      decomposedAtIndex: "ㄸ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "뷁",
+      char: "뛣",
+      charIndex: 1,
+      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 4,
+      decomposedAtIndex: "ㅞ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "뷁",
+      char: "뛣",
+      charIndex: 1,
+      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 5,
+      decomposedAtIndex: "ㅀ",
+      decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "뷁뛣",
+      char: "겍",
+      charIndex: 2,
+      decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 6,
+      decomposedAtIndex: "ㄱ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "뷁뛣",
+      char: "겍",
+      charIndex: 2,
+      decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 7,
+      decomposedAtIndex: "ㅔ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "뷁뛣",
+      char: "겍",
+      charIndex: 2,
+      decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 8,
+      decomposedAtIndex: "ㄱ",
+      decomposedIndex: 2,
+    },
+  ]);
+});
+
+test("decompose '윾ab랄ㄹ", () => {
+  expect(fullDecompose("윾ab랄ㄹ")).toEqual([
+    {
+      wordBeforeCharIndex: "",
+      char: "윾",
+      charIndex: 0,
+      decomposedSingle: ["ㅇ", "ㅡ", "ㄲ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 0,
+      decomposedAtIndex: "ㅇ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "윾",
+      charIndex: 0,
+      decomposedSingle: ["ㅇ", "ㅡ", "ㄲ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 1,
+      decomposedAtIndex: "ㅡ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "윾",
+      charIndex: 0,
+      decomposedSingle: ["ㅇ", "ㅡ", "ㄲ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 2,
+      decomposedAtIndex: "ㄲ",
+      decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "윾",
+      char: "a",
+      charIndex: 1,
+      decomposedSingle: ["a"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 3,
+      decomposedAtIndex: "a",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "윾a",
+      char: "b",
+      charIndex: 2,
+      decomposedSingle: ["b"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 4,
+      decomposedAtIndex: "b",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "윾ab",
+      char: "랄",
+      charIndex: 3,
+      decomposedSingle: ["ㄹ", "ㅏ", "ㄹ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 5,
+      decomposedAtIndex: "ㄹ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "윾ab",
+      char: "랄",
+      charIndex: 3,
+      decomposedSingle: ["ㄹ", "ㅏ", "ㄹ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 6,
+      decomposedAtIndex: "ㅏ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "윾ab",
+      char: "랄",
+      charIndex: 3,
+      decomposedSingle: ["ㄹ", "ㅏ", "ㄹ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 7,
+      decomposedAtIndex: "ㄹ",
+      decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "윾ab랄",
+      char: "ㄹ",
+      charIndex: 4,
+      decomposedSingle: ["ㄹ"],
+      currentWord: "윾ab랄ㄹ",
+      flatIndex: 8,
+      decomposedAtIndex: "ㄹ",
+      decomposedIndex: 0,
+    },
+  ]);
+});
