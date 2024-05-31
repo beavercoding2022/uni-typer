@@ -15,5 +15,10 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [swc(), typescript()],
+  plugins: [
+    swc(),
+    typescript({
+      exclude: ["**/__tests__", "**/*.test.ts", "test/**/*.*"],
+    }),
+  ],
 };

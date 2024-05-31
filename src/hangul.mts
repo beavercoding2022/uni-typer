@@ -194,30 +194,32 @@ const COMPLETE_JONG = [
   "ㅍ",
   "ㅎ",
 ];
-/* 복잡한 자음: [ 자음1, 자음2, 자음1+자음2 ] */
+/* 복잡한 자음: [ 자음1+자음2, 자음1, 자음2  ] */
+/* 복잡한 모음: [모음1+모음2, 모음1, 모음2] */
 const COMPLEX_CONSONANTS = [
-  ["ㄱ", "ㅅ", "ㄳ"],
-  ["ㄴ", "ㅈ", "ㄵ"],
-  ["ㄴ", "ㅎ", "ㄶ"],
-  ["ㄹ", "ㄱ", "ㄺ"],
-  ["ㄹ", "ㅁ", "ㄻ"],
-  ["ㄹ", "ㅂ", "ㄼ"],
-  ["ㄹ", "ㅅ", "ㄽ"],
-  ["ㄹ", "ㅌ", "ㄾ"],
-  ["ㄹ", "ㅍ", "ㄿ"],
-  ["ㄹ", "ㅎ", "ㅀ"],
-  ["ㅂ", "ㅅ", "ㅄ"],
+  ["ㄳ", "ㄱ", "ㅅ"],
+  ["ㄵ", "ㄴ", "ㅈ"],
+  ["ㄶ", "ㄴ", "ㅎ"],
+  ["ㄺ", "ㄹ", "ㄱ"],
+  ["ㄻ", "ㄹ", "ㅁ"],
+  ["ㄼ", "ㄹ", "ㅂ"],
+  ["ㄽ", "ㄹ", "ㅅ"],
+  ["ㄾ", "ㄹ", "ㅌ"],
+  ["ㄿ", "ㄹ", "ㅍ"],
+  ["ㅀ", "ㄹ", "ㅎ"],
+  ["ㅄ", "ㅂ", "ㅅ"],
 ];
-/* 복잡한 모음: [모음1, 모음2, 모음1+모음2] */
 const COMPLEX_VOWELS = [
-  ["ㅗ", "ㅏ", "ㅘ"],
-  ["ㅗ", "ㅐ", "ㅙ"],
-  ["ㅗ", "ㅣ", "ㅚ"],
-  ["ㅜ", "ㅓ", "ㅝ"],
-  ["ㅜ", "ㅔ", "ㅞ"],
-  ["ㅜ", "ㅣ", "ㅟ"],
-  ["ㅡ", "ㅣ", "ㅢ"],
+  ["ㅘ", "ㅗ", "ㅏ"],
+  ["ㅙ", "ㅗ", "ㅐ"],
+  ["ㅚ", "ㅗ", "ㅣ"],
+  ["ㅝ", "ㅜ", "ㅓ"],
+  ["ㅞ", "ㅜ", "ㅔ"],
+  ["ㅟ", "ㅜ", "ㅣ"],
+  ["ㅢ", "ㅡ", "ㅣ"],
 ];
+
+const COMPLEXES = [...COMPLEX_CONSONANTS, ...COMPLEX_VOWELS];
 
 function getFromTable(table: (string | string[])[], index: number) {
   const selected = table[index];
@@ -235,7 +237,7 @@ export function isHangul(input: string) {
   );
 }
 
-export function hangulSimpleDecompose(singleChar: string): string[] {
+export function decomposeHangul(singleChar: string): string[] {
   if (singleChar.length !== 1) {
     throw new Error("Input must be a single character.");
   }
@@ -250,11 +252,9 @@ export function hangulSimpleDecompose(singleChar: string): string[] {
     const jung = Math.floor((code - jong) / 28) % 21;
     const cho = Math.floor((code - jong) / 28 / 21);
 
-    return [
-      CHO[cho],
-      getFromTable(JUNG, jung),
-      getFromTable(JONG, jong),
-    ].filter((v) => v !== "" && typeof v === "string");
+    return [CHO[cho], getFromTable(JUNG, jung), getFromTable(JONG, jong)]
+      .filter((v) => v !== "" && typeof v === "string")
+      .flatMap((v) => decomposeHangul(v));
   }
 
   if (
@@ -265,8 +265,16 @@ export function hangulSimpleDecompose(singleChar: string): string[] {
       "Hangul Jamo Extended-B",
     ])(singleChar)
   ) {
-    return [singleChar];
+    const complex = COMPLEXES.find((v) => v[0] === singleChar);
+
+    return complex ? [...complex.slice(1)] : [singleChar];
   }
 
   return [singleChar];
+}
+
+export function combineHangul(arrStr: string[]) {
+  arrStr.reduce((acc, str) => {
+    return acc;
+  }, [] as string[]);
 }

@@ -1,13 +1,9 @@
 // sum.test.js
 import { expect, test } from "vitest";
-import {
-  simpleDecompose,
-  detailDecompose,
-  fullDecompose,
-} from "../src/decompose.mjs";
+import { decompose } from "../src/decompose.mjs";
 
 test("decompose '가나다'", () => {
-  expect(simpleDecompose("가나다")).toEqual([
+  expect(decompose("가나다", "simple")).toEqual([
     "ㄱ",
     "ㅏ",
     "ㄴ",
@@ -17,36 +13,13 @@ test("decompose '가나다'", () => {
   ]);
 });
 
-test("decompose '가나다' with wordDecomposer", () => {
-  expect(detailDecompose("가나다")).toEqual([
-    {
-      char: "가",
-      charIndex: 0,
-      decomposedSingle: ["ㄱ", "ㅏ"],
-      wordBeforeCharIndex: "",
-    },
-    {
-      char: "나",
-      charIndex: 1,
-      decomposedSingle: ["ㄴ", "ㅏ"],
-      wordBeforeCharIndex: "가",
-    },
-    {
-      char: "다",
-      charIndex: 2,
-      decomposedSingle: ["ㄷ", "ㅏ"],
-      wordBeforeCharIndex: "가나",
-    },
-  ]);
-});
-
 test("decompose '뷁뛣겍", () => {
-  expect(fullDecompose("뷁뛣겍")).toEqual([
+  expect(decompose("뷁뛣겍")).toEqual([
     {
       wordBeforeCharIndex: "",
       char: "뷁",
       charIndex: 0,
-      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      decomposedSingle: ["ㅂ", "ㅜ", "ㅔ", "ㄹ", "ㄱ"],
       currentWord: "뷁뛣겍",
       flatIndex: 0,
       decomposedAtIndex: "ㅂ",
@@ -56,29 +29,49 @@ test("decompose '뷁뛣겍", () => {
       wordBeforeCharIndex: "",
       char: "뷁",
       charIndex: 0,
-      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      decomposedSingle: ["ㅂ", "ㅜ", "ㅔ", "ㄹ", "ㄱ"],
       currentWord: "뷁뛣겍",
       flatIndex: 1,
-      decomposedAtIndex: "ㅞ",
+      decomposedAtIndex: "ㅜ",
       decomposedIndex: 1,
     },
     {
       wordBeforeCharIndex: "",
       char: "뷁",
       charIndex: 0,
-      decomposedSingle: ["ㅂ", "ㅞ", "ㄺ"],
+      decomposedSingle: ["ㅂ", "ㅜ", "ㅔ", "ㄹ", "ㄱ"],
       currentWord: "뷁뛣겍",
       flatIndex: 2,
-      decomposedAtIndex: "ㄺ",
+      decomposedAtIndex: "ㅔ",
       decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "뷁",
+      charIndex: 0,
+      decomposedSingle: ["ㅂ", "ㅜ", "ㅔ", "ㄹ", "ㄱ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 3,
+      decomposedAtIndex: "ㄹ",
+      decomposedIndex: 3,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "뷁",
+      charIndex: 0,
+      decomposedSingle: ["ㅂ", "ㅜ", "ㅔ", "ㄹ", "ㄱ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 4,
+      decomposedAtIndex: "ㄱ",
+      decomposedIndex: 4,
     },
     {
       wordBeforeCharIndex: "뷁",
       char: "뛣",
       charIndex: 1,
-      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      decomposedSingle: ["ㄸ", "ㅜ", "ㅔ", "ㄹ", "ㅎ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 3,
+      flatIndex: 5,
       decomposedAtIndex: "ㄸ",
       decomposedIndex: 0,
     },
@@ -86,21 +79,41 @@ test("decompose '뷁뛣겍", () => {
       wordBeforeCharIndex: "뷁",
       char: "뛣",
       charIndex: 1,
-      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      decomposedSingle: ["ㄸ", "ㅜ", "ㅔ", "ㄹ", "ㅎ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 4,
-      decomposedAtIndex: "ㅞ",
+      flatIndex: 6,
+      decomposedAtIndex: "ㅜ",
       decomposedIndex: 1,
     },
     {
       wordBeforeCharIndex: "뷁",
       char: "뛣",
       charIndex: 1,
-      decomposedSingle: ["ㄸ", "ㅞ", "ㅀ"],
+      decomposedSingle: ["ㄸ", "ㅜ", "ㅔ", "ㄹ", "ㅎ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 5,
-      decomposedAtIndex: "ㅀ",
+      flatIndex: 7,
+      decomposedAtIndex: "ㅔ",
       decomposedIndex: 2,
+    },
+    {
+      wordBeforeCharIndex: "뷁",
+      char: "뛣",
+      charIndex: 1,
+      decomposedSingle: ["ㄸ", "ㅜ", "ㅔ", "ㄹ", "ㅎ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 8,
+      decomposedAtIndex: "ㄹ",
+      decomposedIndex: 3,
+    },
+    {
+      wordBeforeCharIndex: "뷁",
+      char: "뛣",
+      charIndex: 1,
+      decomposedSingle: ["ㄸ", "ㅜ", "ㅔ", "ㄹ", "ㅎ"],
+      currentWord: "뷁뛣겍",
+      flatIndex: 9,
+      decomposedAtIndex: "ㅎ",
+      decomposedIndex: 4,
     },
     {
       wordBeforeCharIndex: "뷁뛣",
@@ -108,7 +121,7 @@ test("decompose '뷁뛣겍", () => {
       charIndex: 2,
       decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 6,
+      flatIndex: 10,
       decomposedAtIndex: "ㄱ",
       decomposedIndex: 0,
     },
@@ -118,7 +131,7 @@ test("decompose '뷁뛣겍", () => {
       charIndex: 2,
       decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 7,
+      flatIndex: 11,
       decomposedAtIndex: "ㅔ",
       decomposedIndex: 1,
     },
@@ -128,7 +141,7 @@ test("decompose '뷁뛣겍", () => {
       charIndex: 2,
       decomposedSingle: ["ㄱ", "ㅔ", "ㄱ"],
       currentWord: "뷁뛣겍",
-      flatIndex: 8,
+      flatIndex: 12,
       decomposedAtIndex: "ㄱ",
       decomposedIndex: 2,
     },
@@ -136,7 +149,7 @@ test("decompose '뷁뛣겍", () => {
 });
 
 test("decompose '윾ab랄ㄹ", () => {
-  expect(fullDecompose("윾ab랄ㄹ")).toEqual([
+  expect(decompose("윾ab랄ㄹ")).toEqual([
     {
       wordBeforeCharIndex: "",
       char: "윾",
@@ -226,6 +239,71 @@ test("decompose '윾ab랄ㄹ", () => {
       flatIndex: 8,
       decomposedAtIndex: "ㄹ",
       decomposedIndex: 0,
+    },
+  ]);
+});
+
+test("decompose 'ㅘㅙㅚ", () => {
+  expect(decompose("ㅘㅙㅚ")).toEqual([
+    {
+      wordBeforeCharIndex: "",
+      char: "ㅘ",
+      charIndex: 0,
+      decomposedSingle: ["ㅗ", "ㅏ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 0,
+      decomposedAtIndex: "ㅗ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "",
+      char: "ㅘ",
+      charIndex: 0,
+      decomposedSingle: ["ㅗ", "ㅏ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 1,
+      decomposedAtIndex: "ㅏ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "ㅘ",
+      char: "ㅙ",
+      charIndex: 1,
+      decomposedSingle: ["ㅗ", "ㅐ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 2,
+      decomposedAtIndex: "ㅗ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "ㅘ",
+      char: "ㅙ",
+      charIndex: 1,
+      decomposedSingle: ["ㅗ", "ㅐ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 3,
+      decomposedAtIndex: "ㅐ",
+      decomposedIndex: 1,
+    },
+    {
+      wordBeforeCharIndex: "ㅘㅙ",
+      char: "ㅚ",
+      charIndex: 2,
+      decomposedSingle: ["ㅗ", "ㅣ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 4,
+      decomposedAtIndex: "ㅗ",
+      decomposedIndex: 0,
+    },
+    {
+      wordBeforeCharIndex: "ㅘㅙ",
+      char: "ㅚ",
+      charIndex: 2,
+      decomposedSingle: ["ㅗ", "ㅣ"],
+      currentWord: "ㅘㅙㅚ",
+      flatIndex: 5,
+      decomposedAtIndex: "ㅣ",
+      decomposedIndex: 1,
     },
   ]);
 });

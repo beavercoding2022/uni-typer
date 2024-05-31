@@ -54,9 +54,9 @@
     "vitest": "^1.6.0"
   },
   "bugs": {
-    "url": "https://github.com/beavercoding2022/uni-splitter/issues"
+    "url": "https://github.com/beavercoding2022/uni-typer/issues"
   },
-  "homepage": "https://github.com/beavercoding2022/uni-splitter#readme",
+  "homepage": "https://github.com/beavercoding2022/uni-typer#readme",
   "packageManager": "pnpm@9.0.6",
   "directories": {
     "test": "test"
