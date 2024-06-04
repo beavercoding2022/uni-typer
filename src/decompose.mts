@@ -1,5 +1,4 @@
 import { decomposeHangul, isHangul } from "@/hangul.mjs";
-import { getReducedUnicodeBlocks, getUnicodeBlock } from "@/unicode-blocks.mjs";
 
 export type DetailDecomposed = {
   wordBeforeCharIndex: string;
@@ -21,6 +20,10 @@ export type FullDecomposed = {
 
 function simpleDecompose(input: string): string[] {
   return input.split("").flatMap((c) => {
+    if (c === " ") {
+      return [" "];
+    }
+
     // if c is Hangul, decompose again with hangulSimpleDecompose function
     if (isHangul(c)) {
       return decomposeHangul(c);
