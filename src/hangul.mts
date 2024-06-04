@@ -232,6 +232,87 @@ function getFromTable(table: (string | string[])[], index: number) {
   return selected;
 }
 
+export function removeJungAndJong(input: string) {
+  if (input.length !== 1) {
+    throw new Error("Input must be a single character.");
+  }
+
+  const unicode = input.charCodeAt(0);
+
+  if (isInBlock("Hangul Syllables")(input)) {
+    const code = unicode - HANGUL_OFFSET;
+    const jong = code % 28;
+    const jung = Math.floor((code - jong) / 28) % 21;
+
+    return String.fromCharCode(unicode - jong - jung * 28);
+  }
+
+  return input;
+}
+
+export function removeJong(input: string) {
+  if (typeof input !== "string") {
+    throw new Error("Input must be a string.");
+  }
+
+  if (input.length !== 1) {
+    throw new Error("Input must be a single character.");
+  }
+
+  const unicode = input.charCodeAt(0);
+
+  if (isInBlock("Hangul Syllables")(input)) {
+    const code = unicode - HANGUL_OFFSET;
+    const jong = code % 28;
+
+    return String.fromCharCode(unicode - jong);
+  }
+
+  return input;
+}
+
+export function excerptJung(input: string): string {
+  const sanitized =
+    typeof input !== "string" ? "" : input.length > 1 ? input[0] : input;
+
+  const unicode = sanitized.charCodeAt(0);
+
+  if (isInBlock("Hangul Syllables")(sanitized)) {
+    const code = unicode - HANGUL_OFFSET;
+    const jung = Math.floor((code - (code % 28)) / 28) % 21;
+
+    return typeof JUNG[jung] === "string"
+      ? (JUNG[jung] as string)
+      : JUNG[jung][0];
+  }
+
+  return "";
+}
+
+export function excerptJong(input: string): string {
+  const sanitized =
+    typeof input !== "string" ? "" : input.length > 1 ? input[0] : input;
+
+  const unicode = sanitized.charCodeAt(0);
+
+  if (isInBlock("Hangul Syllables")(sanitized)) {
+    const code = unicode - HANGUL_OFFSET;
+    const jong = code % 28;
+
+    return typeof JONG[jong] === "string"
+      ? (JONG[jong] as string)
+      : JONG[jong][0];
+  }
+
+  return "";
+}
+
+export function isComplexConsonant(input: string) {
+  return COMPLEX_CONSONANTS.some(
+    (v) => v[0] === input || v[1] === input || v[2] === input
+  );
+}
+
 export function isHangul(input: string) {
   return getUnicodeBlock(input, getReducedUnicodeBlocks("Hangul")).every(
     (v) => v.block !== "Unknown"
@@ -277,7 +358,7 @@ export function decomposeHangul(singleChar: string): string[] {
 export function combineHangul(input: string[]) {
   return input
     .reduce(
-      (acc, cur, index, arr) => {
+      (acc, cur, index) => {
         // if the cur is not hangul, add and skip
         if (!isHangul(cur)) {
           return {
@@ -288,20 +369,55 @@ export function combineHangul(input: string[]) {
           };
         }
 
-        const next = arr[index + 1];
-        if (!next) {
+        const typed = acc.result[acc.result.length - 1];
+        if (typeof typed !== "string") {
           return {
             ...acc,
+            result: [...acc.result, cur],
             last: cur,
             index,
           };
         }
 
-        const typed = acc.result[acc.result.length - 1];
-        // 자음 + 단모음
-        if (CHO.includes(cur) && JUNG.includes(next)) {
-          const choIndex = CHO.indexOf(cur);
-          const jungIndex = JUNG.indexOf(next);
+        // (자음 + 단/복모음 + 단자음) + 단자음 => 한글자
+        if (
+          isInBlock("Hangul Syllables")(typed) &&
+          JONG.findIndex((v) => v[1] === excerptJong(typed) && v[2] === cur) >
+            -1
+        ) {
+          const code = removeJong(typed).charCodeAt(0);
+
+          const complexIndex = JONG.findIndex(
+            (v) =>
+              typeof v !== "string" &&
+              v[1] === excerptJong(typed) &&
+              v[2] === cur
+          );
+
+          const result = String.fromCharCode(code + complexIndex);
+
+          return {
+            ...acc,
+            result: [...acc.result.slice(0, acc.result.length - 1), result],
+            last: cur,
+            index,
+          };
+        }
+
+        // (자음 + 모음 + 단자음) + 모음 => 두글자
+        if (
+          isInBlock("Hangul Syllables")(typed) &&
+          (typed.charCodeAt(0) - HANGUL_OFFSET) % 28 !== 0 &&
+          JONG.findIndex(
+            (v) => typeof v !== "string" && v[0] === excerptJong(typed)
+          ) === -1 &&
+          JUNG.includes(cur)
+        ) {
+          const jongRemoved = removeJong(typed);
+          const jong = excerptJong(typed);
+
+          const choIndex = CHO.indexOf(jong);
+          const jungIndex = JUNG.indexOf(cur);
 
           const result = String.fromCharCode(
             HANGUL_OFFSET + choIndex * 21 * 28 + jungIndex * 28
@@ -309,28 +425,35 @@ export function combineHangul(input: string[]) {
 
           return {
             ...acc,
-            result: [...acc.result, result],
+            result: [
+              ...acc.result.slice(0, acc.result.length - 1),
+              jongRemoved,
+              result,
+            ],
             last: cur,
             index,
           };
         }
 
-        // (자음 + 모음) + 모음 => 자음 + 복모음
+        // (자음 + 모음) + 모음 => (자음 + 복모음)
+        const maybeComplexVowelIndex = JUNG.findIndex(
+          (v) =>
+            typeof v !== "string" && v[1] === excerptJung(typed) && v[2] === cur
+        );
+
         if (
           isInBlock("Hangul Syllables")(typed) &&
           (typed.charCodeAt(0) - HANGUL_OFFSET) % 28 === 0 &&
-          COMPLEX_VOWELS.findIndex((v) => v[1] === cur && v[2] === next) > -1
+          maybeComplexVowelIndex > -1
         ) {
           const choCode =
             Math.floor((typed.charCodeAt(0) - HANGUL_OFFSET) / (28 * 21)) *
               (28 * 21) +
             HANGUL_OFFSET; // 자음 + ㅏ 위치 찾기
 
-          const complexIndex = JUNG.findIndex(
-            (v) => typeof v !== "string" && v[1] === cur && v[2] === next
+          const result = String.fromCharCode(
+            choCode + maybeComplexVowelIndex * 28
           );
-
-          const result = String.fromCharCode(choCode + complexIndex * 28);
 
           return {
             ...acc,
@@ -358,25 +481,18 @@ export function combineHangul(input: string[]) {
           };
         }
 
-        // (자음 + 단/복모음 + 자음) + 자음 => 한글자
-        if (
-          isInBlock("Hangul Syllables")(typed) &&
-          COMPLEX_CONSONANTS.findIndex((v) => v[1] === cur && v[2] === next) >
-            -1
-        ) {
-          const code =
-            Math.floor((typed.charCodeAt(0) - HANGUL_OFFSET) / 28) * 28 +
-            HANGUL_OFFSET;
+        // 자음 + 단모음
+        if (CHO.includes(typed) && JUNG.includes(cur)) {
+          const choIndex = CHO.indexOf(typed);
+          const jungIndex = JUNG.indexOf(cur);
 
-          const complexIndex = JONG.findIndex(
-            (v) => typeof v !== "string" && v[1] === cur && v[2] === next
+          const result = String.fromCharCode(
+            HANGUL_OFFSET + choIndex * 21 * 28 + jungIndex * 28
           );
-
-          const result = String.fromCharCode(code + complexIndex);
 
           return {
             ...acc,
-            result: [...acc.result, result],
+            result: [...acc.result.slice(0, acc.result.length - 1), result],
             last: cur,
             index,
           };
@@ -384,6 +500,7 @@ export function combineHangul(input: string[]) {
 
         return {
           ...acc,
+          result: [...acc.result, cur],
           last: cur,
           index,
         };

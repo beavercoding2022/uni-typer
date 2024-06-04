@@ -332,7 +332,9 @@ export const UNICODE_BLOCKS: [number, number, string][] = [
 ];
 
 export function getUnicodeBlock(input: string, blocks = UNICODE_BLOCKS) {
-  return input.split("").map((char) => {
+  const sanitized = typeof input === "string" ? input : "";
+
+  return sanitized.split("").map((char) => {
     const code = char.charCodeAt(0);
     if (code === undefined) {
       return {
@@ -369,6 +371,14 @@ export function getReducedUnicodeBlocks(blockNames: string | string[]) {
 
 export function isInBlock(blockNames: string | string[]) {
   return (input: string) => {
+    if (typeof input !== "string") {
+      return false;
+    }
+
+    if (input.length < 1) {
+      return false;
+    }
+
     return getUnicodeBlock(input, getReducedUnicodeBlocks(blockNames)).every(
       (v) => v.block !== "Unknown"
     );
