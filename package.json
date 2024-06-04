@@ -5,7 +5,6 @@
   "types": "dist/index.d.mts",
   "source": "src/index.mts",
   "files": [
-    "src",
     "dist"
   ],
   "exports": {
