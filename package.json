@@ -1,6 +1,6 @@
 {
   "name": "@beavercoding/uni-typer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Uni typer is a library that helps you to display the type effect of a unicode string on your website.",
   "types": "dist/index.d.mts",
   "source": "src/index.mts",
