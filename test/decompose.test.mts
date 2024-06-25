@@ -1,4 +1,3 @@
-// sum.test.js
 import { expect, test } from "vitest";
 import { decompose } from "../src/decompose.mjs";
 

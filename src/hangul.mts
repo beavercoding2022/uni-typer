@@ -1,5 +1,6 @@
 // Inspired by https://github.com/e-/Hangul.js
 
+import { decompose } from "@/decompose.mjs";
 import {
   getReducedUnicodeBlocks,
   getUnicodeBlock,
@@ -85,116 +86,7 @@ const JONG = [
 ];
 /* 유니코드 한글 (Hangul Syllables) 시작 위치 */
 const HANGUL_OFFSET = 0xac00;
-/* 자음 */
-const CONSONANTS = [
-  "ㄱ",
-  "ㄲ",
-  "ㄳ",
-  "ㄴ",
-  "ㄵ",
-  "ㄶ",
-  "ㄷ",
-  "ㄸ",
-  "ㄹ",
-  "ㄺ",
-  "ㄻ",
-  "ㄼ",
-  "ㄽ",
-  "ㄾ",
-  "ㄿ",
-  "ㅀ",
-  "ㅁ",
-  "ㅂ",
-  "ㅃ",
-  "ㅄ",
-  "ㅅ",
-  "ㅆ",
-  "ㅇ",
-  "ㅈ",
-  "ㅉ",
-  "ㅊ",
-  "ㅋ",
-  "ㅌ",
-  "ㅍ",
-  "ㅎ",
-];
-/* Assembled 초성 */
-const COMPLETE_CHO = [
-  "ㄱ",
-  "ㄲ",
-  "ㄴ",
-  "ㄷ",
-  "ㄸ",
-  "ㄹ",
-  "ㅁ",
-  "ㅂ",
-  "ㅃ",
-  "ㅅ",
-  "ㅆ",
-  "ㅇ",
-  "ㅈ",
-  "ㅉ",
-  "ㅊ",
-  "ㅋ",
-  "ㅌ",
-  "ㅍ",
-  "ㅎ",
-];
-/* Assembled 중성 */
-const COMPLETE_JUNG = [
-  "ㅏ",
-  "ㅐ",
-  "ㅑ",
-  "ㅒ",
-  "ㅓ",
-  "ㅔ",
-  "ㅕ",
-  "ㅖ",
-  "ㅗ",
-  "ㅘ",
-  "ㅙ",
-  "ㅚ",
-  "ㅛ",
-  "ㅜ",
-  "ㅝ",
-  "ㅞ",
-  "ㅟ",
-  "ㅠ",
-  "ㅡ",
-  "ㅢ",
-  "ㅣ",
-];
-/* Assembled 종성 */
-const COMPLETE_JONG = [
-  "",
-  "ㄱ",
-  "ㄲ",
-  "ㄳ",
-  "ㄴ",
-  "ㄵ",
-  "ㄶ",
-  "ㄷ",
-  "ㄹ",
-  "ㄺ",
-  "ㄻ",
-  "ㄼ",
-  "ㄽ",
-  "ㄾ",
-  "ㄿ",
-  "ㅀ",
-  "ㅁ",
-  "ㅂ",
-  "ㅄ",
-  "ㅅ",
-  "ㅆ",
-  "ㅇ",
-  "ㅈ",
-  "ㅊ",
-  "ㅋ",
-  "ㅌ",
-  "ㅍ",
-  "ㅎ",
-];
+
 /* 복잡한 자음: [ 자음1+자음2, 자음1, 자음2  ] */
 /* 복잡한 모음: [모음1+모음2, 모음1, 모음2] */
 const COMPLEX_CONSONANTS = [
@@ -305,12 +197,6 @@ export function excerptJong(input: string): string {
   }
 
   return "";
-}
-
-export function isComplexConsonant(input: string) {
-  return COMPLEX_CONSONANTS.some(
-    (v) => v[0] === input || v[1] === input || v[2] === input
-  );
 }
 
 export function isHangul(input: string) {
@@ -513,4 +399,101 @@ export function combineHangul(input: string[]) {
       }
     )
     .result.join("");
+}
+
+// Inspired by es-hangul, TOSS
+export function chosungIncludes(target: string, chosung: string) {
+  if (chosung.length > target.length) {
+    return false;
+  }
+
+  const targetOnlyHangul = target
+    .split("")
+    .filter((c) => isHangul(c))
+    .join("");
+  const chosungOnlyHangul = chosung
+    .split("")
+    .filter((c) => isHangul(c))
+    .join("");
+
+  const chosungDecomposed = decompose(chosungOnlyHangul, "detail");
+
+  if (chosungDecomposed.length !== chosung.length) {
+    return false;
+  }
+
+  const chosungArr = chosungDecomposed.reduce((acc, cur) => {
+    if (cur.decomposedIndex === 0) {
+      return [...acc, cur.decomposedAtIndex];
+    }
+
+    return acc;
+  }, [] as string[]);
+
+  const result = decompose(targetOnlyHangul, "detail").reduce(
+    (acc, _cur, index, arr) => {
+      if (acc) {
+        return true;
+      }
+
+      if (index + chosungArr.length > arr.length) {
+        return false;
+      }
+
+      const ahead = arr
+        .filter((v) => v.decomposedIndex === 0)
+        .slice(index, index + chosungArr.length)
+        .map((v) => v);
+
+      if (ahead.length === 0) {
+        return false;
+      }
+
+      if (
+        ahead.length > 0 &&
+        ahead.every((v, i) => v.decomposedAtIndex === chosungArr[i])
+      ) {
+        return true;
+      }
+
+      return acc;
+    },
+    false
+  );
+
+  return result;
+}
+
+// Inspired by es-hangul, TOSS
+export type Josa =
+  | "이/가"
+  | "을/를"
+  | "은/는"
+  | "으로/로"
+  | "와/과"
+  | "이나/나"
+  | "이에/에"
+  | "이란/란"
+  | "아/야"
+  | "이랑/랑"
+  | "이에요/예요"
+  | "으로서/로서"
+  | "으로써/로써"
+  | "으로부터/로부터";
+
+export function josa(word: string, josa: Josa) {
+  const lastChar = word[word.length - 1];
+  const lastCharDecomposed = decompose(lastChar, "detail");
+
+  if (lastCharDecomposed.length === 0) {
+    return word;
+  }
+
+  const lastCharJong = lastCharDecomposed[lastCharDecomposed.length - 1];
+
+  if (CHO.includes(lastCharJong.decomposedAtIndex)) {
+    return word + josa.split("/")[0];
+  }
+
+  return word + josa.split("/")[1];
 }

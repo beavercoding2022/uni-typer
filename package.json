@@ -8,14 +8,16 @@
     "dist"
   ],
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs"
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
   },
   "main": "./dist/index.cjs",
   "type": "module",
   "scripts": {
     "start": "node ./dist/index.mjs",
-    "build": "rollup -c",
+    "build": "rm -rf ./dist && rollup -c",
     "watch": "rollup -cw",
     "test": "vitest",
     "release": "release-it"

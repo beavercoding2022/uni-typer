@@ -35,6 +35,9 @@ function simpleDecompose(input: string): string[] {
   });
 }
 
+export function decompose(input: string, mode: "simple"): string[];
+export function decompose(input: string, mode: "detail"): FullDecomposed[];
+export function decompose(input: string): FullDecomposed[];
 export function decompose(input: string, mode: "simple" | "detail" = "detail") {
   if (mode === "simple") {
     return simpleDecompose(input);
