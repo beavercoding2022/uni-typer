@@ -39,6 +39,7 @@
     "@babel/preset-react": "^7.24.6",
     "@babel/preset-typescript": "^7.24.6",
     "@release-it/conventional-changelog": "^8.0.1",
+    "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-swc": "^0.3.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@swc-node/core": "^1.13.1",

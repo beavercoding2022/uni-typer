@@ -1,6 +1,7 @@
 import swc from "@rollup/plugin-swc";
 import typescript from "@rollup/plugin-typescript";
 import { dts } from "rollup-plugin-dts";
+import alias from "@rollup/plugin-alias";
 
 export default [
   {
@@ -28,6 +29,11 @@ export default [
   {
     input: "./src/index.d.ts",
     output: [{ file: "dist/index.d.mts", format: "es" }],
-    plugins: [dts()],
+    plugins: [
+      dts(),
+      alias({
+        entries: [{ find: "@", replacement: "./" }],
+      }),
+    ],
   },
 ];
