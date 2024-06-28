@@ -5,7 +5,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 const config: Config = {
   title: "Uni Typer",
   tagline:
-    "Uni typer is a tool for splitting unicode characters into their individual components. ",
+    "Uni typer is a tool for splitting unicode characters into their individual components with ESM support.",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -34,12 +34,49 @@ const config: Config = {
     [
       "classic",
       {
+        pages: {
+          remarkPlugins: [
+            [
+              require("@docusaurus/remark-plugin-npm2yarn"),
+              {
+                sync: true,
+                converters: [
+                  "yarn",
+                  "pnpm",
+                  [
+                    "Bun",
+                    (code: string) =>
+                      code.replace(/npm/g, "bun").replace(/install/g, "add"),
+                  ],
+                ],
+              },
+            ],
+          ],
+        },
+
         docs: {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
             "https://github.com/beavercoding2022/uni-typer/tree/main/docs",
+          remarkPlugins: [
+            [
+              require("@docusaurus/remark-plugin-npm2yarn"),
+              {
+                sync: true,
+                converters: [
+                  "yarn",
+                  "pnpm",
+                  [
+                    "Bun",
+                    (code: string) =>
+                      code.replace(/npm/g, "npm").replace(/install/g, "add"),
+                  ],
+                ],
+              },
+            ],
+          ],
         },
         blog: {
           showReadingTime: true,
@@ -63,9 +100,9 @@ const config: Config = {
       items: [
         {
           type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          sidebarId: "docsSidebar",
           position: "left",
-          label: "Tutorial",
+          label: "Docs",
         },
         // { to: "/blog", label: "Blog", position: "left" },
         {
@@ -82,14 +119,19 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "Tutorial",
+              label: "Docs",
               to: "/docs/intro",
             },
           ],
         },
         {
           title: "Community",
-          items: [],
+          items: [
+            {
+              label: "Discord",
+              href: "https://discord.gg/Xa9VfcvE",
+            },
+          ],
         },
         {
           title: "More",

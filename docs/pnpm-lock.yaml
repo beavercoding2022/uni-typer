@@ -14,6 +14,9 @@ importers:
       '@docusaurus/preset-classic':
         specifier: 3.4.0
         version: 3.4.0(@algolia/client-search@4.23.3)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.14.0)(typescript@5.2.2)
+      '@docusaurus/remark-plugin-npm2yarn':
+        specifier: ^3.4.0
+        version: 3.4.0
       '@mdx-js/react':
         specifier: ^3.0.0
         version: 3.0.1(@types/react@18.3.3)(react@18.3.1)
@@ -23,6 +26,9 @@ importers:
       prism-react-renderer:
         specifier: ^2.3.0
         version: 2.3.1(react@18.3.1)
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.91.0)
       react:
         specifier: ^18.0.0
         version: 18.3.1
@@ -887,6 +893,10 @@ packages:
     resolution: {integrity: sha512-YMMxTUQV/QFSnbgrP3tjDzLHRg7vsbMn8e9HAa8o/1iXoiomo48b7sk/kkmWEuWNDPJVlKSJRB6Y2fHqdJk+SQ==}
     peerDependencies:
       react: '*'
+
+  '@docusaurus/remark-plugin-npm2yarn@3.4.0':
+    resolution: {integrity: sha512-MXcYAkKu6544h7J4vbKdeH+G5HZf6LF3qZORQqWzxOi2p82PTLRu0YM6ZgzfPjH5nZClgLBHypPbyO9qhkxPKw==}
+    engines: {node: '>=18.0'}
 
   '@docusaurus/theme-classic@3.4.0':
     resolution: {integrity: sha512-0IPtmxsBYv2adr1GnZRdMkEQt1YW6tpzrUPj02YxNpvJ5+ju4E13J5tB4nfdaen/tfR1hmpSPlTFPvTf4kwy8Q==}
@@ -3199,6 +3209,10 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
+  npm-to-yarn@2.2.1:
+    resolution: {integrity: sha512-O/j/ROyX0KGLG7O6Ieut/seQ0oiTpHF2tXAcFbpdTLQFiaNtkyTXXocM1fwpaa60dg1qpWj0nHlbNhx6qwuENQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
 
@@ -3686,6 +3700,12 @@ packages:
   raw-body@2.5.2:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
+
+  raw-loader@4.0.2:
+    resolution: {integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      webpack: ^4.0.0 || ^5.0.0
 
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
@@ -5952,6 +5972,16 @@ snapshots:
     dependencies:
       '@types/react': 18.3.3
       react: 18.3.1
+
+  '@docusaurus/remark-plugin-npm2yarn@3.4.0':
+    dependencies:
+      mdast-util-mdx: 3.0.0
+      npm-to-yarn: 2.2.1
+      tslib: 2.6.3
+      unified: 11.0.4
+      unist-util-visit: 5.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@docusaurus/theme-classic@3.4.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)':
     dependencies:
@@ -8895,6 +8925,8 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
+  npm-to-yarn@2.2.1: {}
+
   nprogress@0.2.0: {}
 
   nth-check@2.1.1:
@@ -9356,6 +9388,12 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
+
+  raw-loader@4.0.2(webpack@5.91.0):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.91.0
 
   rc@1.2.8:
     dependencies:
