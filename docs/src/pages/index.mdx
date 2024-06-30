@@ -47,3 +47,156 @@ export function HomepageHeader() {
 ```bash npm2yarn
 npm install @beavercoding/uni-typer
 ```
+
+```javascript
+import {
+  decompose,
+  combine,
+  chosungIncludes,
+  josa,
+} from "@beavercoding/uni-typer";
+
+console.log(decompose("안녕"), "simple");
+/**
+ * ["ㅇ", "ㅏ", "ㄴ", "ㄴ", "ㅕ", "ㅇ", "ㅇ", "ㅏ", "ㄴ", "ㄴ", "ㅕ", "ㅇ"]
+*/
+console.log(decompose("안녕"), "detail")
+// [
+//   {
+//     wordBeforeCharIndex: "",
+//     char: "안",
+//     charIndex: 0,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 0,
+//     decomposedAtIndex: "ㅇ",
+//     decomposedIndex: 0,
+//   }, {
+//     wordBeforeCharIndex: "",
+//     char: "안",
+//     charIndex: 0,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 1,
+//     decomposedAtIndex: "ㅏ",
+//     decomposedIndex: 1,
+//   }, {
+//     wordBeforeCharIndex: "",
+//     char: "안",
+//     charIndex: 0,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 2,
+//     decomposedAtIndex: "ㄴ",
+//     decomposedIndex: 2,
+//   }, {
+//     wordBeforeCharIndex: "안",
+//     char: "녕",
+//     charIndex: 1,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 3,
+//     decomposedAtIndex: "ㄴ",
+//     decomposedIndex: 0,
+//   }, {
+//     wordBeforeCharIndex: "안",
+//     char: "녕",
+//     charIndex: 1,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 4,
+//     decomposedAtIndex: "ㅕ",
+//     decomposedIndex: 1,
+//   }, {
+//     wordBeforeCharIndex: "안",
+//     char: "녕",
+//     charIndex: 1,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 5,
+//     decomposedAtIndex: "ㅇ",
+//     decomposedIndex: 2,
+//   }, {
+//     wordBeforeCharIndex: "안녕",
+//     char: "안",
+//     charIndex: 2,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 6,
+//     decomposedAtIndex: "ㅇ",
+//     decomposedIndex: 0,
+//   }, {
+//     wordBeforeCharIndex: "안녕",
+//     char: "안",
+//     charIndex: 2,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 7,
+//     decomposedAtIndex: "ㅏ",
+//     decomposedIndex: 1,
+//   }, {
+//     wordBeforeCharIndex: "안녕",
+//     char: "안",
+//     charIndex: 2,
+//     decomposedSingle: [ "ㅇ", "ㅏ", "ㄴ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 8,
+//     decomposedAtIndex: "ㄴ",
+//     decomposedIndex: 2,
+//   }, {
+//     wordBeforeCharIndex: "안녕안",
+//     char: "녕",
+//     charIndex: 3,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 9,
+//     decomposedAtIndex: "ㄴ",
+//     decomposedIndex: 0,
+//   }, {
+//     wordBeforeCharIndex: "안녕안",
+//     char: "녕",
+//     charIndex: 3,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 10,
+//     decomposedAtIndex: "ㅕ",
+//     decomposedIndex: 1,
+//   }, {
+//     wordBeforeCharIndex: "안녕안",
+//     char: "녕",
+//     charIndex: 3,
+//     decomposedSingle: [ "ㄴ", "ㅕ", "ㅇ" ],
+//     currentWord: "안녕안녕",
+//     flatIndex: 11,
+//     decomposedAtIndex: "ㅇ",
+//     decomposedIndex: 2,
+//   }
+// ]
+console.log(
+  combine([
+    "ㅇ",
+    "ㅏ",
+    "ㄴ",
+    "ㄴ",
+    "ㅕ",
+    "ㅇ",
+    "ㅇ",
+    "ㅏ",
+    "ㄴ",
+    "ㄴ",
+    "ㅕ",
+    "ㅇ",
+  ])
+);
+// 안녕안녕
+
+console.log(chosungIncludes("asdf", "asdf"));
+// false 
+
+console.log(chosungIncludes("프론트엔드", "ㅍㄹㅌ"));
+// true
+
+console.log(josa("강아지", "이/가"));
+// 강아지가
+
+```
