@@ -30,10 +30,10 @@ export default [
     input: "./src/index.d.ts",
     output: [{ file: "dist/index.d.mts", format: "es" }],
     plugins: [
-      dts(),
       alias({
         entries: [{ find: "@", replacement: "./" }],
       }),
+      dts(),
     ],
   },
 ];

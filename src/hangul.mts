@@ -321,6 +321,48 @@ export function combineHangul(input: string[]) {
           };
         }
 
+        // (자음 + 모음 + 복자음) + 모음 => 두글자
+        if (
+          isInBlock("Hangul Syllables")(typed) &&
+          (typed.charCodeAt(0) - HANGUL_OFFSET) % 28 !== 0 &&
+          JONG.findIndex(
+            (v) => typeof v !== "string" && v[0] === excerptJong(typed)
+          ) > -1 &&
+          JUNG.includes(cur)
+        ) {
+          const jongRemoved = removeJong(typed);
+          const jong = excerptJong(typed);
+          const combinedIndex = JONG.findIndex(
+            (v) => typeof v !== "string" && v[0] === jong
+          );
+
+          const [_, badchim, choseong] = JONG[combinedIndex] as [
+            string,
+            string,
+            string
+          ];
+
+          const badchimIndex = JONG.indexOf(badchim);
+
+          const choIndex = CHO.indexOf(choseong);
+          const jungIndex = JUNG.indexOf(cur);
+
+          const prev = String.fromCharCode(
+            jongRemoved.charCodeAt(0) + badchimIndex
+          );
+
+          const next = String.fromCharCode(
+            HANGUL_OFFSET + choIndex * 21 * 28 + jungIndex * 28
+          );
+
+          return {
+            ...acc,
+            result: [...acc.result.slice(0, acc.result.length - 1), prev, next],
+            last: cur,
+            index,
+          };
+        }
+
         // (자음 + 모음) + 모음 => (자음 + 복모음)
         const maybeComplexVowelIndex = JUNG.findIndex(
           (v) =>
