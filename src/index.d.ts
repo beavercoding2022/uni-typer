@@ -10,4 +10,6 @@ declare module "@beavercoding/uni-typer" {
   export function chosungIncludes(target: string, chosung: string): boolean;
   // inspired by es-hangul, TOSS
   export function josa(word: string, josa: Josa): string;
+
+  export { FullDecomposed, Josa };
 }

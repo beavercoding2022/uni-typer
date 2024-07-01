@@ -1,12 +1,5 @@
 import { decomposeHangul, isHangul } from "@/hangul.mjs";
 
-export type DetailDecomposed = {
-  wordBeforeCharIndex: string;
-  char: string;
-  charIndex: number;
-  decomposedSingle: string[];
-};
-
 export type FullDecomposed = {
   wordBeforeCharIndex: string;
   char: string;
